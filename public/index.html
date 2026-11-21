@@ -85,7 +85,26 @@ let currentFilter="all", profile={pwd:false,needs:[]}, currentUser=null;
 const money=n=>"₱"+n.toLocaleString("en-PH");
 function render(list=places){const root=document.getElementById("cards");root.innerHTML=list.length?list.map(p=>`<article class="card"><div class="photo"><img src="${p.photo}" alt="${p.name}"><span class="score">♿ ${p.score}/100 access</span></div><div class="card-body"><div class="location">${p.city}</div><h3>${p.name}</h3><div class="chips">${p.labels.map(x=>`<span class="chip">${x}</span>`).join("")}</div><div class="price-row"><div><div class="price">${money(p.price)} <span class="small">/ night</span></div><div class="small">Sample rate · provider confirmation required</div></div><button class="btn" onclick="openBooking(${p.id})">View & book</button></div></div></article>`).join(""):`<div class="empty">No sample destinations match those filters. Try another option.</div>`}
 function setFilter(f,el){currentFilter=f;document.querySelectorAll(".filter").forEach(b=>b.classList.remove("active"));el.classList.add("active");render(f==="all"?places:places.filter(p=>p.tags.includes(f)))}
-function searchDestinations(){const q=document.getElementById("searchPlace").value.toLowerCase();const list=places.filter(p=>(p.name+" "+p.city).toLowerCase().includes(q));render(list);document.getElementById("explore").scrollIntoView({behavior:"smooth"});}
+
+function searchDestinations(){
+  const q=document.getElementById("searchPlace").value.toLowerCase().trim();
+
+  const stayResults=places.filter(p=>
+    (p.name+" "+p.city).toLowerCase().includes(q)
+  );
+
+  const townResults=isabelaLocations
+    .filter(location=>location.name.toLowerCase().includes(q))
+    .map((location,index)=>({
+      id:"isabela-"+index,
+      name:location.name,
+      isLocation:true
+    }));
+
+  render([...stayResults,...townResults]);
+  document.getElementById("explore").scrollIntoView({behavior:"smooth"});
+}
+
 function showAll(){document.getElementById("searchPlace").value="";currentFilter="all";document.querySelectorAll(".filter").forEach(b=>b.classList.remove("active"));document.querySelector('[data-filter="all"]').classList.add("active");render();}
 function openModal(html){document.getElementById("modalContent").innerHTML='<button class="close" onclick="closeModal()">✕</button>'+html;document.getElementById("modal").classList.add("show")}
 function closeModal(){document.getElementById("modal").classList.remove("show")}
@@ -107,7 +126,40 @@ async function updateBooking(id,status){try{await api('/api/admin/bookings/'+id,
 async function loadSession(){try{const r=await api('/api/me');if(r.user)setUser(r.user)}catch(e){console.warn(e)}}
 
 document.getElementById("modal").addEventListener("click",e=>{if(e.target.id==="modal")closeModal()});
-render();
+
+function render(list=places){
+  const root=document.getElementById("cards");
+  root.innerHTML=list.length?list.map(p=>{
+    if(p.isLocation){
+      return `<article class="card">
+        <div class="card-body">
+          <div class="location">ISABELA · CAGAYAN VALLEY</div>
+          <h3>${p.name}</h3>
+          <p class="sub">Explore destinations in ${p.name}, Isabela.</p>
+        </div>
+      </article>`;
+    }
+    return `<article class="card">
+      <div class="photo">
+        <img src="${p.photo}" alt="${p.name}">
+        <span class="score">♿ ${p.score}/100 access</span>
+      </div>
+      <div class="card-body">
+        <div class="location">${p.city}</div>
+        <h3>${p.name}</h3>
+        <div class="chips">${p.labels.map(x=>`<span class="chip">${x}</span>`).join("")}</div>
+        <div class="price-row">
+          <div>
+            <div class="price">${money(p.price)} <span class="small">/ night</span></div>
+            <div class="small">Sample rate · provider confirmation required</div>
+          </div>
+          <button class="btn" onclick="openBooking(${p.id})">View & book</button>
+        </div>
+      </div>
+    </article>`;
+  }).join(""):`<div class="empty">No destinations found. Try another search.</div>`;
+}
+
 loadSession();
 </script>
 </body></html>
