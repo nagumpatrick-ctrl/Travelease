@@ -36,6 +36,51 @@ const places=[
 {id:5,name:"Baguio Pine Haven",city:"Baguio City, Benguet",price:3500,score:86,photo:"https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?auto=format&fit=crop&w=900&q=80",tags:["ramp","hearing"],labels:["Ramp access","Hearing support"],desc:"A cool-climate retreat with ramp access to selected facilities. Terrain around the property may be sloped.",ramp:true,elevator:true,toilet:false,visual:false,hearing:true},
 {id:6,name:"Ilocos Seaside Resort",city:"Pagudpud, Ilocos Norte",price:4200,score:90,photo:"https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=900&q=80",tags:["ramp","toilet"],labels:["Step-free access","Accessible restroom"],desc:"A coastal escape with step-free access in selected areas. Ask about accessible transport and beach routes.",ramp:true,elevator:false,toilet:true,visual:false,hearing:false}
 ];
+
+const isabelaLocations = [
+  "Alicia",
+  "Angadanan",
+  "Aurora",
+  "Benito Soliven",
+  "Burgos",
+  "Cabagan",
+  "Cabatuan",
+  "Cordon",
+  "Delfin Albano",
+  "Dinapigue",
+  "Divilacan",
+  "Echague",
+  "Gamu",
+  "Jones",
+  "Luna",
+  "Maconacon",
+  "Mallig",
+  "Naguilian",
+  "Palanan",
+  "Quezon",
+  "Quirino",
+  "Ramon",
+  "Reina Mercedes",
+  "Roxas",
+  "San Agustin",
+  "San Guillermo",
+  "San Isidro",
+  "San Manuel",
+  "San Mariano",
+  "San Mateo",
+  "San Pablo",
+  "Santa Maria",
+  "Santo Tomas",
+  "Tumauini",
+  "Cauayan City",
+  "City of Ilagan",
+  "Santiago City"
+].map(name => ({
+  name,
+  province: "Isabela",
+  region: "Cagayan Valley"
+}));
+
 let currentFilter="all", profile={pwd:false,needs:[]}, currentUser=null;
 const money=n=>"₱"+n.toLocaleString("en-PH");
 function render(list=places){const root=document.getElementById("cards");root.innerHTML=list.length?list.map(p=>`<article class="card"><div class="photo"><img src="${p.photo}" alt="${p.name}"><span class="score">♿ ${p.score}/100 access</span></div><div class="card-body"><div class="location">${p.city}</div><h3>${p.name}</h3><div class="chips">${p.labels.map(x=>`<span class="chip">${x}</span>`).join("")}</div><div class="price-row"><div><div class="price">${money(p.price)} <span class="small">/ night</span></div><div class="small">Sample rate · provider confirmation required</div></div><button class="btn" onclick="openBooking(${p.id})">View & book</button></div></div></article>`).join(""):`<div class="empty">No sample destinations match those filters. Try another option.</div>`}
