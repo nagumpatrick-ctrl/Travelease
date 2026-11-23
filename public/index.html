@@ -37,49 +37,178 @@ const places=[
 {id:6,name:"Ilocos Seaside Resort",city:"Pagudpud, Ilocos Norte",price:4200,score:90,photo:"https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=900&q=80",tags:["ramp","toilet"],labels:["Step-free access","Accessible restroom"],desc:"A coastal escape with step-free access in selected areas. Ask about accessible transport and beach routes.",ramp:true,elevator:false,toilet:true,visual:false,hearing:false}
 ];
 
-const isabelaLocations = [
-  "Alicia",
-  "Angadanan",
-  "Aurora",
-  "Benito Soliven",
-  "Burgos",
-  "Cabagan",
-  "Cabatuan",
-  "Cordon",
-  "Delfin Albano",
-  "Dinapigue",
-  "Divilacan",
-  "Echague",
-  "Gamu",
-  "Jones",
-  "Luna",
-  "Maconacon",
-  "Mallig",
-  "Naguilian",
-  "Palanan",
-  "Quezon",
-  "Quirino",
-  "Ramon",
-  "Reina Mercedes",
-  "Roxas",
-  "San Agustin",
-  "San Guillermo",
-  "San Isidro",
-  "San Manuel",
-  "San Mariano",
-  "San Mateo",
-  "San Pablo",
-  "Santa Maria",
-  "Santo Tomas",
-  "Tumauini",
-  "Cauayan City",
-  "City of Ilagan",
-  "Santiago City"
-].map(name => ({
-  name,
-  province: "Isabela",
-  region: "Cagayan Valley"
-}));
+
+const IsabelaTouristsattractins = [
+  {
+    id: 1,
+    name: "Aguinaldo Shrine",
+    municipality: "Palanan",
+    category: "Historical Site",
+    description: "A historic site commemorating the capture of General Emilio Aguinaldo by American forces on March 23, 1901, marking an important chapter in Philippine history.",
+    photo: "https://www.provinceofisabela.ph/images/destinations/aguinaldo%20shrine.jpg"
+  },
+  {
+    id: 2,
+    name: "Bonsai Forest",
+    municipality: "Dinapigue",
+    category: "Nature",
+    description: "A remarkable forest known for its naturally small trees, some ranging from one to seven feet tall. The area showcases the unique vegetation and natural beauty of the Sierra Madre.",
+    photo: "https://www.provinceofisabela.ph/images/destinations/bonsai.jpg"
+  },
+  {
+    id: 3,
+    name: "Camp Samal",
+    municipality: "Tumauini",
+    category: "Nature and Recreation",
+    description: "A historic campsite that hosted the 1977 National Jamboree. Its elevated rolling hills offer scenic views of the Cagayan River, Pinacanauan River, and surrounding mountain ranges.",
+    photo: null
+  },
+  {
+    id: 4,
+    name: "Crocodile Sanctuary of San Mariano",
+    municipality: "San Mariano",
+    category: "Wildlife",
+    description: "A wildlife conservation destination associated with efforts to protect the critically endangered Philippine crocodile. Visitors can learn about local wildlife and conservation initiatives.",
+    photo: "https://www.provinceofisabela.ph/images/destinations/crocodile.jpg"
+  },
+  {
+    id: 5,
+    name: "Dibulo Falls",
+    municipality: "Dinapigue",
+    category: "Waterfall",
+    description: "A spectacular waterfall in the Sierra Madre mountain range and one of the attractions of Sierra Madre Nature Park. It is surrounded by lush forest and natural scenery.",
+    photo: "https://www.provinceofisabela.ph/images/destinations/dibulo.jpg"
+  },
+  {
+    id: 6,
+    name: "Dicotcotan Beach",
+    municipality: "Palanan",
+    category: "Beach",
+    description: "A beautiful three-kilometer coastal destination featuring sandy shores, coral reefs, seagrass beds, and coastal forest. Marine wildlife, including dolphins and sea turtles, can be found in its surrounding waters.",
+    photo: "https://www.provinceofisabela.ph/images/destinations/dicotcotan.jpg"
+  },
+  {
+    id: 7,
+    name: "Fuyot Springs National Park",
+    municipality: "Ilagan City",
+    category: "Nature and Adventure",
+    description: "A nature destination in Barangay Santa Victoria featuring limestone caves, rock formations, forest trails, and Pinzal Falls. It is popular for outdoor exploration and spelunking.",
+    photo: "https://www.provinceofisabela.ph/images/destinations/sta%20victoria.jpg"
+  },
+  {
+    id: 8,
+    name: "Maconacon Falls",
+    municipality: "Maconacon",
+    category: "Waterfall",
+    description: "A natural waterfall surrounded by the scenic landscape of coastal Isabela. It is among the notable attractions in Maconacon, alongside the town's famous hanging bridge.",
+    photo: null
+  },
+  {
+    id: 9,
+    name: "Magat Dam",
+    municipality: "Ramon",
+    category: "Landmark and Recreation",
+    description: "A major multipurpose dam built along the Magat River near the Isabela-Ifugao boundary. It supports irrigation and power generation, while its reservoir offers scenic views.",
+    photo: null
+  },
+  {
+    id: 10,
+    name: "Mororan River",
+    municipality: "Isabela (exact municipality to confirm)",
+    category: "River",
+    description: "A scenic river known for its clear waters, massive boulders, and small cascading waterfalls. It is a natural destination for visitors who enjoy river scenery and outdoor exploration.",
+    photo: null
+  },
+  {
+    id: 11,
+    name: "Palanan Rainforest",
+    municipality: "Palanan",
+    category: "Nature and Wildlife",
+    description: "A biologically rich rainforest within the Northern Sierra Madre Natural Park. It shelters diverse plant and animal life and is an important part of Isabela's natural heritage.",
+    photo: null
+  },
+  {
+    id: 12,
+    name: "Sinavulluan Caves",
+    municipality: "Isabela (exact municipality to confirm)",
+    category: "Cave",
+    description: "A cave destination featuring chambers with stalactites, stalagmites, and distinctive limestone formations. It offers opportunities for cave exploration and nature appreciation.",
+    photo: null
+  },
+  {
+    id: 13,
+    name: "Queen Isabela Park",
+    municipality: "Ilagan City",
+    category: "Park",
+    description: "A public park in Barangay Alibagu named after Queen Isabella II of Spain, the namesake of Isabela. It provides an open recreational space for residents and visitors.",
+    photo: null
+  },
+  {
+    id: 14,
+    name: "Landmark of Heroes",
+    municipality: "Jones",
+    category: "Historical and Cultural Site",
+    description: "A sculptural monument depicting the historic Battle of Payac in 1787. Created by artist Joel Pragas, it honors local history and the people who fought during the uprising against Spanish rule.",
+    photo: null
+  },
+  {
+    id: 15,
+    name: "Ilagan Japanese Tunnel",
+    municipality: "Ilagan City",
+    category: "Historical Site",
+    description: "A World War II-era tunnel in Barangay Santo Tomas that served as a Japanese military shelter and base. The restored tunnel offers visitors a glimpse into the area's wartime history.",
+    photo: null
+  },
+  {
+    id: 16,
+    name: "National Shrine of Our Lady of the Visitation of Guibang",
+    municipality: "Gamu",
+    category: "Religious Site",
+    description: "A major Catholic pilgrimage destination dedicated to Our Lady of the Visitation. It welcomes thousands of devotees, especially during its annual feast on July 2.",
+    photo: null
+  },
+  {
+    id: 17,
+    name: "Our Lady of the Pillar Church",
+    municipality: "Cauayan City",
+    category: "Heritage Church",
+    description: "A historic church dedicated to Nuestra Señora del Pilar. It is recognized for its Hispanic-era heritage, religious significance, and notable architectural features.",
+    photo: null
+  },
+  {
+    id: 18,
+    name: "San Pablo Church",
+    municipality: "San Pablo",
+    category: "Heritage Church",
+    description: "Built in 1624, this is recognized as the oldest church in Isabela. Its impressive six-level bell tower is a distinctive landmark in the historic town of San Pablo.",
+    photo: null
+  },
+  {
+    id: 19,
+    name: "Saint Matthias Parish Church",
+    municipality: "Tumauini",
+    category: "Heritage Church",
+    description: "A renowned Spanish colonial church famous for its intricate brick architecture and unique cylindrical bell tower. It is one of the most distinctive heritage structures in the Cagayan Valley.",
+    photo: null
+  },
+  {
+    id: 20,
+    name: "Our Lady of Atocha Church",
+    municipality: "Alicia",
+    category: "Heritage Church",
+    description: "A historic church dedicated to Nuestra Señora de Atocha. Known for its antique Castilian architectural style, it is an important religious and cultural landmark in Alicia.",
+    photo: null
+  },
+  {
+    id: 21,
+    name: "ILAGAN Sanctuary",
+    municipality: "Santa Victoria, Ilagan City",
+    category: "Eco-Tourism and Adventure",
+    description: "A nature and recreation destination within the Fuyot Springs and Santa Victoria area. It offers visitors opportunities to enjoy outdoor activities, scenic surroundings, wildlife attractions, and adventure experiences.",
+    photo: null
+  }
+];
+
 
 let currentFilter="all", profile={pwd:false,needs:[]}, currentUser=null;
 const money=n=>"₱"+n.toLocaleString("en-PH");
