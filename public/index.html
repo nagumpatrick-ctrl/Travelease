@@ -216,6 +216,7 @@ function render(list=places){const root=document.getElementById("cards");root.in
 function setFilter(f,el){currentFilter=f;document.querySelectorAll(".filter").forEach(b=>b.classList.remove("active"));el.classList.add("active");render(f==="all"?places:places.filter(p=>p.tags.includes(f)))}
 
 
+
 function searchDestinations(){
   const q = document.getElementById("searchPlace")
     .value.toLowerCase().trim();
@@ -223,16 +224,6 @@ function searchDestinations(){
   const stayResults = places.filter(p =>
     (p.name + " " + p.city).toLowerCase().includes(q)
   );
-
-  const townResults = isabelaLocations
-    .filter(location =>
-      location.name.toLowerCase().includes(q)
-    )
-    .map((location,index) => ({
-      id: "isabela-" + index,
-      name: location.name,
-      isLocation: true
-    }));
 
   const attractionResults = IsabelaTouristsattractins
     .filter(p => {
@@ -242,20 +233,14 @@ function searchDestinations(){
         p.category + " " +
         p.description + " Isabela";
 
-      return q === "" ||
-        q === "isabela" ||
-        searchable.toLowerCase().includes(q);
+      return searchable.toLowerCase().includes(q);
     })
     .map(p => ({
       ...p,
       isTouristAttraction: true
     }));
 
-  render([
-    ...stayResults,
-    ...townResults,
-    ...attractionResults
-  ]);
+  render([...stayResults, ...attractionResults]);
 
   document.getElementById("explore")
     .scrollIntoView({behavior:"smooth"});
