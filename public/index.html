@@ -110,9 +110,58 @@ function openModal(html){document.getElementById("modalContent").innerHTML='<but
 function closeModal(){document.getElementById("modal").classList.remove("show")}
 function openProfile(){openModal(`<h2>Your travel profile</h2><p class="sub">Choose preferences to help tailor destination recommendations.</p><div class="checkline"><input type="checkbox" id="isPwd" ${profile.pwd?"checked":""}><label for="isPwd"><b>I am a PWD and may claim applicable privileges.</b><br><span class="small">A valid PWD ID and required documents must be presented to the provider.</span></label></div><div class="access-grid">${["Wheelchair / step-free access","Senior-friendly access","Visual impairment support","Hearing impairment support","Accessible restroom","Elevator access","Wide doorways","Assistance animal friendly"].map((x,i)=>`<label><input type="checkbox" class="need" value="${x}" ${profile.needs.includes(x)?"checked":""}> ${x}</label>`).join("")}</div><div class="notice">Your preferences are stored in your account. Do not upload or enter your PWD ID number here; present required documents directly to the provider.</div><button class="btn" style="width:100%" onclick="saveProfile()">Save preferences</button>`)}
 async function saveProfile(){profile.pwd=document.getElementById("isPwd").checked;profile.needs=[...document.querySelectorAll(".need:checked")].map(x=>x.value);if(!currentUser){openAccount();return}try{const r=await api("/api/me",{method:"PATCH",body:JSON.stringify({pwdClaim:profile.pwd,accessibilityNeeds:profile.needs})});currentUser=r.user;closeModal();alert("Your preferences have been saved to your account.")}catch(e){alert(e.message)}}
-function openBooking(id){const p=places.find(x=>x.id===id);openModal(`<h2>Book ${p.name}</h2><p class="sub">${p.city} · ${money(p.price)} per night</p><div class="formgrid"><div class="field"><label>Check-in</label><input type="date" id="bIn"></div><div class="field"><label>Check-out</label><input type="date" id="bOut"></div><div class="field"><label>Total guests</label><select id="bGuests"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option></select></div><div class="field"><label>Number of PWD guests</label><select id="bPwd"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></div><div class="field full"><label>Accessibility requests</label><input id="bNeeds" placeholder="e.g. step-free room, roll-in shower"></div><div class="field full"><label>Your email</label><input id="bEmail" type="email" placeholder="you@example.com"></div></div><div class="checkline"><input type="checkbox" id="pwdConfirm"><label for="pwdConfirm">I understand that PWD privileges require a valid PWD ID and apply only to the eligible PWD's own use/portion, subject to applicable law and provider verification.</label></div><div class="summary"><div><span>Nightly rate</span><b>${money(p.price)}</b></div><div><span>Estimated total</span><b id="estimate">${money(p.price)}</b></div><div class="small">Final amount and any statutory discount/VAT treatment are confirmed by the establishment.</div></div><div class="notice">This demo submits a booking request only. It does not charge a payment method or confirm live room availability. The 20% PWD privilege and VAT exemption under Philippine law are subject to eligibility, exclusive use/availment, and establishment validation. Companions do not automatically receive the PWD discount.</div><button class="btn" style="width:100%" onclick="submitBooking(${p.id})">Send booking request</button>`);document.getElementById("bIn").value=document.getElementById("checkIn").value;document.getElementById("bIn").addEventListener("change",calcEstimate);document.getElementById("bOut").addEventListener("change",calcEstimate);document.getElementById("bPwd").addEventListener("change",calcEstimate);}
+function openBooking(id){const p=places.find(x=>x.id===id);openModal(`<h2>Book ${p.name}</h2><p class="sub">${p.city} · ${money(p.price)} per night</p><div class="formgrid"><div class="field"><label>Check-in</label><input type="date" id="bIn"></div><div class="field"><label>Check-out</label><input type="date" id="bOut"></div><div class="field"><label>Total guests</label><select id="bGuests"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option></select></div><div class="field"><label>Number of PWD guests</label><select id="bPwd"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></div><div class="field full"><label>Accessibility requests</label><input id="bNeeds" placeholder="e.g. step-free room, roll-in shower"></div><div class="field full"><label>Your email</label><input id="bEmail" type="email" placeholder="you@example.com"></div>
+<div class="field full">
+  <label>Your Current Address</label>
+  <input id="bAddress" type="text" placeholder="Enter your complete address" required>
+</div>
+</div><div class="checkline"><input type="checkbox" id="pwdConfirm"><label for="pwdConfirm">I understand that PWD privileges require a valid PWD ID and apply only to the eligible PWD's own use/portion, subject to applicable law and provider verification.</label></div><div class="summary"><div><span>Nightly rate</span><b>${money(p.price)}</b></div><div><span>Estimated total</span><b id="estimate">${money(p.price)}</b></div><div class="small">Final amount and any statutory discount/VAT treatment are confirmed by the establishment.</div></div><div class="notice">This demo submits a booking request only. It does not charge a payment method or confirm live room availability. The 20% PWD privilege and VAT exemption under Philippine law are subject to eligibility, exclusive use/availment, and establishment validation. Companions do not automatically receive the PWD discount.</div><button class="btn" style="width:100%" onclick="submitBooking(${p.id})">Send booking request</button>`);document.getElementById("bIn").value=document.getElementById("checkIn").value;document.getElementById("bIn").addEventListener("change",calcEstimate);document.getElementById("bOut").addEventListener("change",calcEstimate);document.getElementById("bPwd").addEventListener("change",calcEstimate);}
 function calcEstimate(){const p=places.find(x=>x.id===Number(document.querySelector('[onclick^="submitBooking"]')?.getAttribute("onclick")?.match(/\d+/)?.[0]))||places[0];let a=new Date(document.getElementById("bIn").value),b=new Date(document.getElementById("bOut").value);let nights=(b-a)/86400000;if(nights>0)document.getElementById("estimate").textContent=money(p.price*nights)+" (before provider-verified privileges)";}
-async function submitBooking(id){const p=places.find(x=>x.id===id),cin=document.getElementById("bIn").value,cout=document.getElementById("bOut").value,guests=Number(document.getElementById("bGuests").value),pwd=Number(document.getElementById("bPwd").value),notes=document.getElementById("bNeeds").value;if(!cin||!cout||new Date(cout)<=new Date(cin)){alert("Please enter valid check-in and check-out dates.");return}if(pwd>0&&!document.getElementById("pwdConfirm").checked){alert("Please confirm the PWD privilege information.");return}if(!currentUser){openAccount("login");return}try{const result=await api("/api/bookings",{method:"POST",body:JSON.stringify({destinationId:id,checkIn:cin,checkOut:cout,guests,pwdGuests:pwd,accessibilityNotes:notes})});openModal(`<div class="success"><div class="tick">✓</div><h2>Booking request saved!</h2><p>Your reference is <b>${result.booking.reference}</b>.</p><p class="sub">${p.name} · ${cin} to ${cout}</p><div class="notice">Your request is saved in your Travelease account with status: Pending. The property must confirm availability and final pricing. PWD privileges are subject to valid documentation and applicable Philippine law.</div><button class="btn" onclick="showMyBookings()">View my bookings</button></div>`)}catch(e){alert(e.message)}}
+async function submitBooking(id){const p=places.find(x=>x.id===id),cin=document.getElementById("bIn").value,cout=document.getElementById("bOut").value,guests=Number(document.getElementById("bGuests").value),pwd=Number(document.getElementById("bPwd").value),notes=document.getElementById("bNeeds").value,address=document.getElementById("bAddress").value.trim();;if(!cin||!cout||new Date(cout)<=new Date(cin)){alert("Please enter valid check-in and check-out dates.");return}if(pwd>0&&!document.getElementById("pwdConfirm").checked){alert("Please confirm the PWD privilege information.");return}if(!currentUser){openAccount("login");return}try{const result=await api("/api/bookings",{method:"POST",body:JSON.stringify({destinationId:id,checkIn:cin,checkOut:cout,guests,pwdGuests:pwd,accessibilityNotes:notes,address:adress})});
+openModal(`
+<div class="tick">✓</div>
+<h2>Booking request saved!</h2>
+
+<p>Your reference:
+<b>${result.booking.reference}</b></p>
+
+<p class="sub">${p.name} · ${cin} to ${cout}</p>
+
+<div class="notice">
+Your booking is pending property confirmation.
+</div>
+
+<h3>Your Travel Safety Map</h3>
+
+<p><b>Your starting address:</b> ${escapeHtml(address)}</p>
+
+<p><b>Your destination:</b> ${escapeHtml(p.name)}, ${escapeHtml(p.city)}</p>
+
+<iframe
+  src="https://www.google.com/maps?q=${encodeURIComponent(address + ' to ' + p.name + ', ' + p.city)}&output=embed"
+  width="100%"
+  height="280"
+  style="border:0;border-radius:12px"
+  loading="lazy">
+</iframe>
+
+<h3>Nearby Emergency Services</h3>
+
+<button class="btn" onclick="window.open('https://www.google.com/maps/search/hospitals+near+' + encodeURIComponent('${p.city}'),'_blank')">
+Find Hospitals
+</button>
+
+<button class="btn" onclick="window.open('https://www.google.com/maps/search/police+stations+near+' + encodeURIComponent('${p.city}'),'_blank')">
+Find Police Stations
+</button>
+
+<button class="btn" onclick="window.open('https://www.google.com/maps/search/fire+stations+near+' + encodeURIComponent('${p.city}'),'_blank')">
+Find Fire Stations
+</button>
+
+<button class="btn" onclick="showMyBookings()">
+View My Bookings
+</button>`)}catch(e){alert(e.message)}}
 async function api(url,options={}){const response=await fetch(url,{...options,headers:{'Content-Type':'application/json',...(options.headers||{})},credentials:'same-origin'});const data=await response.json().catch(()=>({}));if(!response.ok)throw new Error(data.error||'Request failed.');return data}
 function openAccount(mode="register"){if(currentUser){openModal(`<h2>Hello, ${escapeHtml(currentUser.name)}</h2><p class="sub">${escapeHtml(currentUser.email)} · ${currentUser.role}</p><div class="notice">Your account and reservations are stored in the Travelease database.</div><button class="btn" style="width:100%;margin:6px 0" onclick="openProfile()">Accessibility profile</button><button class="btn outline" style="width:100%;margin:6px 0" onclick="showMyBookings()">My bookings</button>${currentUser.role==="admin"?'<button class="btn outline" style="width:100%;margin:6px 0" onclick="showAdmin()">Admin dashboard</button>':''}<button class="btn outline" style="width:100%;margin:6px 0" onclick="logout()">Log out</button>`);return}openAuth(mode)}
 function escapeHtml(x){return String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
